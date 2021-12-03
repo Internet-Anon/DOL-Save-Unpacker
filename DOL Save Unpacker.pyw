@@ -2,12 +2,28 @@ import tkinter as tk
 from tkinter import filedialog
 from tkinter.constants import *
 from lzstring import LZString as lz
+import json
+import os
 
+dataFile = str(os.getenv("LOCALAPPDATA" + "DOLUnpack/default.json"))
 
 def openfile():
-    file = filedialog.askopenfilename(initialdir="/", title="Select File", filetypes=(("Save Files", "*.save"),("Json Files", "*.json"),("All Files","*.*")))
+    if os.path.exists(dataFile):
+        f = open(dataFile, "r")
+        jsonContent = f.read()
+        initdir= json.loads(jsonContent)
+    else:
+        initdir = "/"
+    file = filedialog.askopenfilename(initialdir= initdir, title="Select File", filetypes=(("Save Files", "*.save"),("Json Files", "*.json"),("All Files","*.*")))
     entry.delete(0,END)
     entry.insert(0,file)
+
+def opendir():
+    dir = filedialog.askdirectory(initialdir='/', title="Select Folder")
+    jsonString = json.dumps(dir)
+    f = open(dataFile, "w+")
+    f.write(jsonString)
+    f.close()    
 
 def unpack():
     path = entry.get()
@@ -69,6 +85,11 @@ window.columnconfigure([0,1,2], minsize= 5)
 window.rowconfigure([0,1], minsize= 30)
 
 #GUI Elements
+menu = tk.Menu(window)
+menu.add_command(label= "Set Default Folder", command= opendir)
+
+window.config(menu= menu)
+
 entry = tk.Entry(window, width=30)
 entry.grid(row=0, column=0, columnspan= 2)
 
