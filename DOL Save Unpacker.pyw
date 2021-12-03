@@ -5,7 +5,8 @@ from lzstring import LZString as lz
 import json
 import os
 
-dataFile = str(os.getenv("LOCALAPPDATA" + "DOLUnpack/default.json"))
+dataDir = os.getenv("LOCALAPPDATA") + "\DOLUnpacker\\"
+dataFile = dataDir + "default.json"
 
 def openfile():
     if os.path.exists(dataFile):
@@ -20,6 +21,8 @@ def openfile():
 
 def opendir():
     dir = filedialog.askdirectory(initialdir='/', title="Select Folder")
+    if not os.path.exists(dataDir):
+        os.mkdir(dataDir)
     jsonString = json.dumps(dir)
     f = open(dataFile, "w+")
     f.write(jsonString)
